@@ -1,15 +1,16 @@
 version: '3'
 services:
-
-  db:
+  mysqldb:
     build:
       context: ./mysql
       dockerfile: ./Dockerfile
-    restart:  always
+    restart:  unless-stopped
     networks:
       - docker-express-network
     ports:
       - "3307:3306"
+    expose:
+      - 3306
 
   # Backend
   server-app:
@@ -22,16 +23,18 @@ services:
     - "8888:8888"
     environment:
      - APP_NAME=SOUND HUB
-     - DB_HOST=localhost
+     - DB_HOST=mysqldb 
      - DB_PORT=3306
      - DB_USER=root
      - DB_PASS=123456789
      - DB_NAME=NAME_DATABASE
+    stdin_open: true
+    tty: true
     networks:
       - docker-express-network
-
+    depends_on:
+      - mysqldb
 volumes:
   mysql_data:
-
 networks:
   docker-express-network:
