@@ -2,40 +2,35 @@ version: '3.4'
 
 services:
   mysqldb:
-    image: mysql:5.7
+    build: 
+      context: ./mysql
+      dockerfile: ./Dockerfile
     restart: unless-stopped
-    env_file: ./.env
-    environment:
-      - MYSQL_ROOT_PASSWORD=$DB_PASS
-      - MYSQL_DATABASE=$DB_NAME
     ports:
-      - $MYSQLDB_LOCAL_PORT:$DB_PORT
+      - 3307:3306
     volumes:
       - db:/var/lib/mysql
     networks:
       - auth-networks
 
   server:
-    build: .
     depends_on:
       - mysqldb
-    env_file: ./.env
+    build: .
     restart: unless-stopped
     environment:
       - DB_HOST=mysqldb
-      - DB_USER=$DB_USER
-      - DB_PASS=$DB_PASS
-      - DB_NAME=$DB_NAME
-      - DB_PORT=$DB_PORT
+      - DB_USERNAME=root
+      - DB_PASSWORD=123
+      - DB_DATABASE=DB_NAME
     ports:
-      - $NODE_LOCAL_PORT:$PORT
+      - 8888:8888
     networks:
       - auth-networks
     command: npm start
 
 networks:
   auth-networks:
-    driver: bridge
 
 volumes:
   db:

@@ -15,14 +15,14 @@ export const db = mysql.createConnection({
 
 export const promiseDb = db.promise();
 
-db.connect(function (err) {
+db.connect(function (err, result) {
   if (err) {
     console.log(
       `❌ Error connecting SQL with port ${process.env.DB_HOST + ":" + process.env.DB_PORT} ` +
         err.stack
     );
   } else {
-    console.log("✅ Connect Mysql success");
+    console.log("✅ Connect Mysql success", result && result);
   }
 });
 

@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  mysqldb:
+    build: .
+    restart: unless-stopped
+    ports:
+      - 3307:3306
+    volumes:
+      - db:/var/lib/mysql
+
+volumes:
+  db:

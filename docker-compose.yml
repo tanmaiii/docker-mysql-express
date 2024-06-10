@@ -1,40 +1,32 @@
-version: '3'
+version: '1'
+
 services:
-  mysqldb:
-    build:
+  mysqldb-app:
+    build: 
       context: ./mysql
       dockerfile: ./Dockerfile
-    restart:  unless-stopped
+    restart: unless-stopped
+    volumes:
+      - db:/var/lib/mysql
     networks:
-      - docker-express-network
-    ports:
-      - "3307:3306"
-    expose:
-      - 3306
+      - docker-expess-networks
 
-  # Backend
-  server-app:
+  server:
     build: 
       context: ./server
       dockerfile: ./Dockerfile
-    restart: unless-stopped
-    container_name: docker-express-server
-    ports:
-    - "8888:8888"
-    environment:
-     - APP_NAME=SOUND HUB
-     - DB_HOST=mysqldb 
-     - DB_PORT=3306
-     - DB_USER=root
-     - DB_PASS=123456789
-     - DB_NAME=NAME_DATABASE
-    stdin_open: true
-    tty: true
-    networks:
-      - docker-express-network
     depends_on:
-      - mysqldb
-volumes:
-  mysql_data:
+      - mysqldb-app
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    networks:
+      - docker-expess-networks
+    command: npm start
+
 networks:
-  docker-express-network:
+  docker-expess-networks:
+    driver: bridge
+
+volumes:
+  db:
