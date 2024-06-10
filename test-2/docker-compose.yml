@@ -23,11 +23,22 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=123
       - DB_DATABASE=DB_NAME
-    ports:
-      - 8888:8888
+      - PORT=8000
     networks:
       - auth-networks
     command: npm start
+
+  nginx:
+    depends_on:
+      - server
+    build:
+      context: ./nginx
+      dockerfile: ./Dockerfile 
+    container_name: nginx 
+    networks:
+      - auth-networks
+    ports:
+      - 80:80
 
 networks:
   auth-networks:
